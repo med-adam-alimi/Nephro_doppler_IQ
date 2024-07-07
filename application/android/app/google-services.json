@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "186807755847",
+    "project_id": "nephrollogy-doppler",
+    "storage_bucket": "nephrollogy-doppler.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186807755847:android:c0beaaa112231452c97d62",
+        "android_client_info": {
+          "package_name": "com.example.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCA75AivCOcZJF6PwrrJxFKhi_3uw6w-6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186807755847:android:ef90524dfc7a6572c97d62",
+        "android_client_info": {
+          "package_name": "com.example.flutter_app3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCA75AivCOcZJF6PwrrJxFKhi_3uw6w-6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
