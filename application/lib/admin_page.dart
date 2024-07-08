@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'patient_page.dart'; // Add this import for patient details
 import 'doctor_page.dart'; // Add this import for doctor details
+import 'home_screen.dart';
+
 
 
 class AdminScreen extends StatelessWidget {
@@ -111,6 +113,7 @@ class AdminScreen extends StatelessWidget {
                   SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () {
+                      _showUpdatePatientDialog(context);
                       // Logic to update information
                     },
                     child: Text('Update Roles'),
@@ -153,9 +156,21 @@ class AdminScreen extends StatelessWidget {
                       Text('Doctor', style: TextStyle(color: Colors.orange)),
                     ],
                   ),
+
                 ],
               ),
               SizedBox(height: 40),
+                 ElevatedButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen ()),
+                    (route) => false,
+                  );
+                },
+                child: Text('Sign Out'),
+              ),
             ],
           ),
         ],

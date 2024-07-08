@@ -1,7 +1,14 @@
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class PatientScreen extends StatelessWidget {
+  final ImagePicker _picker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +55,7 @@ class PatientScreen extends StatelessWidget {
                         age: patients[index]['age']?.toString() ?? '',
                         iconColor: Colors.green,
                         onImportMediaPressed: () {
-                          _importMedia(context, patients[index]['fullName'] ?? '');
+                          _importMedia(context, patients[index]['fullName'] ?? '', patients[index]['email'] ?? '');
                         },
                       );
                     },
@@ -112,10 +119,47 @@ class PatientScreen extends StatelessWidget {
     );
   }
 
-  void _importMedia(BuildContext context, String patientName) {
-    // Replace this with actual logic to import media (photo/video) for the patient
+Future<void> _importMedia(BuildContext context, String patientName, String userEmail) async {
+  final User? user = FirebaseAuth.instance.currentUser;
+
+  if (user == null) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Importing media for $patientName'),
+      content: Text('You must be signed in to upload media'),
+    ));
+    return;
+  }
+
+  final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+  if (image != null) {
+    File file = File(image.path);
+
+    try {
+      // Create a reference to the Firebase Storage location
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('patients/${user.email}/${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+      // Upload the file
+      await ref.putFile(file);
+
+      // Get the download URL of the uploaded file
+      String downloadURL = await ref.getDownloadURL();
+
+      // Optionally, you can save the download URL to Firestore or show a success message
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Media uploaded for $patientName'),
+      ));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to upload media: $e'),
+      ));
+    }
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('No media selected'),
     ));
   }
+}
+
 }

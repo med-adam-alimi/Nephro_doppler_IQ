@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'patient_page.dart'; // Add this import for patient details
 import 'admin_page.dart';
 import 'doctor_page.dart';
+import 'home_screen.dart';
 
 
 
@@ -190,105 +191,24 @@ class SuperAdminScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 40),
+                     ElevatedButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen ()),
+                    (route) => false,
+                  );
+                },
+                child: Text('Sign Out'),
+              ),
             ],
           ),
         ],
       ),
     );
   }
-
-  // Function to show dialog for adding a new Super Admin
-  void _showAddSuperAdminDialog(BuildContext context) {
-    String _fullName = '';
-    String _email = '';
-    String _password = '';
-    String _confirmPassword = '';
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Add Super Administrator'),
-          content: SingleChildScrollView(
-            child: Form(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Full Name'),
-                    onChanged: (value) => _fullName = value,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Email'),
-                    keyboardType: TextInputType.emailAddress,
-                    onChanged: (value) => _email = value,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Password'),
-                    obscureText: true,
-                    onChanged: (value) => _password = value,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    onChanged: (value) => _confirmPassword = value,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            ElevatedButton(
-              child: Text('Add'),
-              onPressed: () async {
-                // Validate and save form data
-                if (_password == _confirmPassword) {
-                  try {
-                    // Implement Firebase logic to add the new Super Admin here
-                    UserCredential userCredential =
-                        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      email: _email,
-                      password: _password,
-                    );
-
-                    // Save additional user data in Firestore
-                    await FirebaseFirestore.instance.collection('superadmins').doc(userCredential.user!.uid).set({
-                      'fullName': _fullName,
-                      'email': _email,
-                      'role':'superadmin',
-                    });
-
-                    // Show success message
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Super Admin added successfully')),
-                    );
-
-                    Navigator.of(context).pop(); // Close the dialog
-                  } catch (e) {
-                    print('Error adding super admin: $e');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to add Super Admin')),
-                    );
-                  }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Passwords do not match')),
-                  );
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
+  
   // Function to show dialog for adding a new Admin
   void _showAddAdminDialog(BuildContext context) {
     String _fullName = '';
@@ -909,4 +829,97 @@ void _showDeleteDoctorDialog(BuildContext context) async {
       throw e;
     }
   }
+  // Function to show dialog for adding a new Super Admin
+  void _showAddSuperAdminDialog(BuildContext context) {
+    String _fullName = '';
+    String _email = '';
+    String _password = '';
+    String _confirmPassword = '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add Super Administrator'),
+          content: SingleChildScrollView(
+            child: Form(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Full Name'),
+                    onChanged: (value) => _fullName = value,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Email'),
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) => _email = value,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Password'),
+                    obscureText: true,
+                    onChanged: (value) => _password = value,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Confirm Password'),
+                    obscureText: true,
+                    onChanged: (value) => _confirmPassword = value,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: Text('Add'),
+              onPressed: () async {
+                // Validate and save form data
+                if (_password == _confirmPassword) {
+                  try {
+                    // Implement Firebase logic to add the new Super Admin here
+                    UserCredential userCredential =
+                        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: _email,
+                      password: _password,
+                    );
+
+                    // Save additional user data in Firestore
+                    await FirebaseFirestore.instance.collection('superadmins').doc(userCredential.user!.uid).set({
+                      'fullName': _fullName,
+                      'email': _email,
+                      'role':'superadmin',
+                    });
+
+                    // Show success message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Super Admin added successfully')),
+                    );
+
+                    Navigator.of(context).pop(); // Close the dialog
+                  } catch (e) {
+                    print('Error adding super admin: $e');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to add Super Admin')),
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Passwords do not match')),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+ 
+
   
