@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "nephrollogy-doppler",
+    "main": "nephrollogy-doppler"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}

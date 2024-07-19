@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/background.jpeg',
+              'assets/images/background.jpeg', // Adjust the path to your image file
               fit: BoxFit.cover,
             ),
           ),

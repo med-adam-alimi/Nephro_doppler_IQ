@@ -6,7 +6,231 @@ import 'admin_page.dart';
 import 'doctor_page.dart';
 import 'home_screen.dart';
 
+import 'pending_approvals_screen.dart'; // Import your PendingApprovalsScreen here
 
+
+class SuperAdminScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Super Admin Dashboard'),
+      ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background1.jpg', // Adjust the path to your image file
+              fit: BoxFit.cover,
+            ),
+          ),
+          ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: [
+              // Super Admin details button
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Super Administrator Details:',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showSuperAdminDetailsDialog(context);
+                    },
+                    child: Text('View Super Admin Details'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+
+              // Add Roles section
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Add Roles:',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showAddSuperAdminDialog(context);
+                    },
+                    child: Text('Add Super Administrator'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showAddAdminDialog(context);
+                    },
+                    child: Text('Add Admin'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showAddDoctorDialog(context);
+                    },
+                    child: Text('Add Doctor'),
+                  ),
+                    ElevatedButton(
+                    onPressed: () {
+                      _showAddPatientDialog(context);
+                    },
+                    child: Text('Add Patient'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+
+              // Delete Roles section
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Delete Roles:',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showDeleteSuperAdminDialog(context);
+                    },
+                    child: Text('Delete Superadmin'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showDeleteAdminDialog(context);
+                    },
+                    child: Text('Delete Admin'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showDeleteDoctorDialog(context);
+                    },
+                    child: Text('Delete Doctor'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showDeletePatientDialog(context);
+                    },
+                    child: Text('Delete Patient'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+
+              // Update Information section
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Update Information:',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showUpdatePatientDialog(context);
+                    },
+                    child: Text('Update Roles'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+
+              // Pending Approvals section
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Pending Approvals:',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PendingApprovalsScreen()),
+                      );
+                    },
+                    child: Text('View Pending Approvals'),
+                  ),
+                ],
+              ),
+
+              // Icons with Labels for Quick Access (Patient, Admin, Doctor screens)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.account_circle, color: Colors.blue),
+                        onPressed: () {
+                          // Navigate to Patient Screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PatientScreen()),
+                          );
+                        },
+                      ),
+                      Text('Patient', style: TextStyle(color: Colors.blue)),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.supervised_user_circle, color: Colors.green),
+                        onPressed: () {
+                          // Navigate to Admin Screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => AdminScreen()),
+                          );
+                        },
+                      ),
+                      Text('Admin', style: TextStyle(color: Colors.green)),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.person, color: Colors.orange),
+                        onPressed: () {
+                          // Navigate to Doctor Screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => DoctorScreen()),
+                          );
+                        },
+                      ),
+                      Text('Doctor', style: TextStyle(color: Colors.orange)),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 40),
+
+              ElevatedButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                    (route) => false,
+                  );
+                },
+                child: Text('Sign Out'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+/*
 
 class SuperAdminScreen extends StatelessWidget {
   @override
@@ -191,24 +415,112 @@ class SuperAdminScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 40),
-                     ElevatedButton(
-                onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen ()),
-                    (route) => false,
-                  );
-                },
-                child: Text('Sign Out'),
-              ),
             ],
           ),
         ],
       ),
     );
   }
-  
+  */
+
+
+
+
+
+
+
+  // Function to show dialog for adding a new Super Admin
+  void _showAddSuperAdminDialog(BuildContext context) {
+    String _fullName = '';
+    String _email = '';
+    String _password = '';
+    String _confirmPassword = '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add Super Administrator'),
+          content: SingleChildScrollView(
+            child: Form(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Full Name'),
+                    onChanged: (value) => _fullName = value,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Email'),
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) => _email = value,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Password'),
+                    obscureText: true,
+                    onChanged: (value) => _password = value,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Confirm Password'),
+                    obscureText: true,
+                    onChanged: (value) => _confirmPassword = value,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: Text('Add'),
+              onPressed: () async {
+                // Validate and save form data
+                if (_password == _confirmPassword) {
+                  try {
+                    // Implement Firebase logic to add the new Super Admin here
+                    UserCredential userCredential =
+                        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: _email,
+                      password: _password,
+                    );
+
+                    // Save additional user data in Firestore
+                    await FirebaseFirestore.instance.collection('superadmins').doc(userCredential.user!.uid).set({
+                      'fullName': _fullName,
+                      'email': _email,
+                      'role':'superadmin',
+                    });
+
+                    // Show success message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Super Admin added successfully')),
+                    );
+
+                    Navigator.of(context).pop(); // Close the dialog
+                  } catch (e) {
+                    print('Error adding super admin: $e');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to add Super Admin')),
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Passwords do not match')),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // Function to show dialog for adding a new Admin
   void _showAddAdminDialog(BuildContext context) {
     String _fullName = '';
@@ -829,41 +1141,73 @@ void _showDeleteDoctorDialog(BuildContext context) async {
       throw e;
     }
   }
-  // Function to show dialog for adding a new Super Admin
-  void _showAddSuperAdminDialog(BuildContext context) {
+   void _showAddPatientDialog(BuildContext context) {
     String _fullName = '';
     String _email = '';
-    String _password = '';
-    String _confirmPassword = '';
+    String _phoneNumber = '';
+    int _age = 0;
+
+    final _formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Super Administrator'),
+          title: Text('Add Patient'),
           content: SingleChildScrollView(
             child: Form(
+              key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Full Name'),
                     onChanged: (value) => _fullName = value,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the full name';
+                      }
+                      return null;
+                    },
                   ),
+                  SizedBox(height: 10),
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Email'),
                     keyboardType: TextInputType.emailAddress,
                     onChanged: (value) => _email = value,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an email';
+                      }
+                      return null;
+                    },
                   ),
+                  SizedBox(height: 10),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Password'),
-                    obscureText: true,
-                    onChanged: (value) => _password = value,
+                    decoration: InputDecoration(labelText: 'Phone Number'),
+                    keyboardType: TextInputType.phone,
+                    onChanged: (value) => _phoneNumber = value,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a phone number';
+                      }
+                      return null;
+                    },
                   ),
+                  SizedBox(height: 10),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    onChanged: (value) => _confirmPassword = value,
+                    decoration: InputDecoration(labelText: 'Age'),
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) => _age = int.parse(value),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the age';
+                      }
+                      if (int.tryParse(value) == null) {
+                        return 'Please enter a valid number';
+                      }
+                      return null;
+                    },
                   ),
                 ],
               ),
@@ -878,40 +1222,18 @@ void _showDeleteDoctorDialog(BuildContext context) async {
             ),
             ElevatedButton(
               child: Text('Add'),
-              onPressed: () async {
-                // Validate and save form data
-                if (_password == _confirmPassword) {
-                  try {
-                    // Implement Firebase logic to add the new Super Admin here
-                    UserCredential userCredential =
-                        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      email: _email,
-                      password: _password,
-                    );
-
-                    // Save additional user data in Firestore
-                    await FirebaseFirestore.instance.collection('superadmins').doc(userCredential.user!.uid).set({
-                      'fullName': _fullName,
-                      'email': _email,
-                      'role':'superadmin',
-                    });
-
-                    // Show success message
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _addPatientToFirestore(_fullName, _email, _phoneNumber, _age).then((_) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Super Admin added successfully')),
+                      SnackBar(content: Text('Patient added successfully')),
                     );
-
-                    Navigator.of(context).pop(); // Close the dialog
-                  } catch (e) {
-                    print('Error adding super admin: $e');
+                    Navigator.of(context).pop();
+                  }).catchError((error) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to add Super Admin')),
+                      SnackBar(content: Text('Failed to add patient: $error')),
                     );
-                  }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Passwords do not match')),
-                  );
+                  });
                 }
               },
             ),
@@ -920,6 +1242,20 @@ void _showDeleteDoctorDialog(BuildContext context) async {
       },
     );
   }
- 
 
+  // Function to add a new Patient to Firestore
+  Future<void> _addPatientToFirestore(String fullName, String email, String phoneNumber, int age) async {
+    try {
+      await FirebaseFirestore.instance.collection('patients').add({
+        'fullName': fullName,
+        'age': age,
+        'email': email,
+        'phoneNumber': phoneNumber,
+        'role': 'Patient', // Setting role as Patient
+      });
+    } catch (e) {
+      throw e;
+    }
+  }
   
+ 

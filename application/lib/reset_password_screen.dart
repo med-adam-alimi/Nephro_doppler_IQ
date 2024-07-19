@@ -36,12 +36,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       body: Stack(
         children: [
           // Background image
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/background.jpeg'), // Background image asset
-                fit: BoxFit.cover,
-              ),
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background.jpeg', // Adjust the path to your image file
+              fit: BoxFit.cover,
             ),
           ),
           // Foreground content
