@@ -3,9 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'patient_page.dart'; // Add this import for patient details
 import 'doctor_page.dart'; // Add this import for doctor details
+import 'home_screen.dart';
+import 'pending_doctors.dart';
 
 
-class AdminScreen extends StatelessWidget {
+
+
+
+  class AdminScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,8 +47,8 @@ class AdminScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
 
-              // Add Doctor and patient  section's
-                     Column(
+              // Add Doctor and Patient sections
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -51,26 +56,22 @@ class AdminScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
                   ),
                   SizedBox(height: 10),
-                  
                   ElevatedButton(
                     onPressed: () {
                       _showAddDoctorDialog(context);
                     },
-                    child: Text('Add doctor'),
+                    child: Text('Add Doctor'),
                   ),
-                    ElevatedButton(
+                  ElevatedButton(
                     onPressed: () {
                       _showAddPatientDialog(context);
                     },
                     child: Text('Add Patient'),
                   ),
-
                 ],
               ),
               SizedBox(height: 20),
 
-      
-            
               // Delete Roles section
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,9 +87,7 @@ class AdminScreen extends StatelessWidget {
                       // Logic to delete Doctor
                     },
                     child: Text('Delete Doctor'),
-                    
                   ),
-                  
                   ElevatedButton(
                     onPressed: () {
                       _showDeletePatientDialog(context);
@@ -111,9 +110,32 @@ class AdminScreen extends StatelessWidget {
                   SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () {
+                      _showUpdatePatientDialog(context);
                       // Logic to update information
                     },
                     child: Text('Update Roles'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+
+              // Pending Approval section
+                Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Pending Approvals:',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PendingApprovalsScreen1()),
+                      );
+                    },
+                    child: Text('View Pending Approvals'),
                   ),
                 ],
               ),
@@ -156,12 +178,27 @@ class AdminScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                    (route) => false,
+                  );
+                },
+                child: Text('Sign Out'),
+              ),
             ],
           ),
         ],
       ),
     );
   }
+
+  
+
+
 
   // Function to show dialog for adding a new Doctor
   void _showAddDoctorDialog(BuildContext context) {

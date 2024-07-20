@@ -80,12 +80,10 @@ class _LogInScreenState extends State<LogInScreen> {
       ),
       body: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/background.jpeg'),
-                fit: BoxFit.cover,
-              ),
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background.jpeg', // Adjust the path to your image file
+              fit: BoxFit.cover,
             ),
           ),
           Padding(

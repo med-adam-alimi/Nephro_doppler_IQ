@@ -1,20 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="$FLUTTER_BASE_HREF">
+  <base href="/">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
@@ -23,16 +10,70 @@
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="application">
+  <meta name="apple-mobile-web-app-title" content="Nephro_doppler">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>application</title>
+  <title>Nephro_doppler</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Set the client_id meta tag for Google Sign-In -->
+  <meta name="google-signin-client_id" content="186807755847-1qq0bqo1fhqodla4drvtstn7d3d3tjjm.apps.googleusercontent.com">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <script src="flutter.js" defer></script>
+  <script src="main.dart.js" defer></script>
+
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+
+  <!-- Add Firebase products that you want to use -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+  <!-- FirebaseUI for Authentication -->
+  <script src="https://cdn.firebase.com/libs/firebaseui/4.8.0/firebaseui.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/4.8.0/firebaseui.css" />
+
+  <!-- Initialize Firebase -->
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyA_ZPlaJMbICApv1V59Rpls9uKcq2NVsxw",
+      authDomain: "nephrollogy-doppler.firebaseapp.com",
+      projectId: "nephrollogy-doppler",
+      storageBucket: "nephrollogy-doppler.appspot.com",
+      messagingSenderId: "186807755847",
+      appId: "1:186807755847:web:eaa7d648a36124d3c97d62",
+      measurementId: "G-WXJFRKDVJ7",
+      
+      clientId: "186807755847-1qq0bqo1fhqodla4drvtstn7d3d3tjjm.apps.googleusercontent.com"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <!-- FirebaseUI Auth Configuration -->
+  <script>
+    // Initialize the FirebaseUI Widget using Firebase
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+    var uiConfig = {
+      signInSuccessUrl: '/',
+      signInOptions: [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID
+      ],
+    };
+
+    // The start method will wait until the DOM is loaded
+    ui.start('#firebaseui-auth-container', uiConfig);
+  </script>
+
+  <!-- Add this container for FirebaseUI -->
+  <div id="firebaseui-auth-container"></div>
 </body>
 </html>

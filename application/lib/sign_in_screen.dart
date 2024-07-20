@@ -27,53 +27,40 @@ class _SignInScreenState extends State<SignInScreen> {
           password: _password,
         );
 
-        // Determine the Firestore collection based on the role
-        String collection;
-        switch (_selectedRole) {
-          case 'Doctor':
-            collection = 'doctors';
-            break;
-          case 'Admin':
-            collection = 'admins';
-            break;
-          case 'Super Admin':
-            collection = 'superadmins';
-            break;
-          default:
-            collection = 'users'; // Fallback, not recommended
-        }
-
-        // Save user data including role in the specific Firestore collection
-        await _firestore.collection(collection).doc(userCredential.user!.uid).set({
+        // Save user data including role in the pendingUsers collection
+        await _firestore.collection('pendingUsers').doc(userCredential.user!.uid).set({
           'fullName': _fullName,
           'email': _email,
           'role': _selectedRole,
+          'uid': userCredential.user!.uid,
         });
 
-        // Log in the user directly after sign-up
-        _navigateBasedOnRole();
+        // Inform the user about the pending approval
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Account created. Waiting for approval.'),
+          ),
+        );
+
+        // Clear the form fields
+        setState(() {
+          _fullName = '';
+          _email = '';
+          _password = '';
+          _confirmPassword = '';
+          _selectedRole = 'Doctor'; // Reset to default role
+        });
+
+        // Optionally, you can also clear the form fields using the form's controller
+        _formKey.currentState!.reset();
       } catch (e) {
         // Handle errors
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error: $e'),
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+          ),
+        );
       }
-    }
-  }
-
-  void _navigateBasedOnRole() {
-    switch (_selectedRole) {
-      case 'Doctor':
-        Navigator.pushReplacementNamed(context, '/doctor');
-        break;
-      case 'Admin':
-        Navigator.pushReplacementNamed(context, '/admin');
-        break;
-      case 'Super Admin':
-        Navigator.pushReplacementNamed(context, '/superadmin');
-        break;
-      default:
-        Navigator.pushReplacementNamed(context, '/home');
     }
   }
 
@@ -87,7 +74,7 @@ class _SignInScreenState extends State<SignInScreen> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/background.jpeg',
+              'assets/images/background.jpeg', // Adjust the path to your image file
               fit: BoxFit.cover,
             ),
           ),

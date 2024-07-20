@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@firebase/firestore": "^4.6.4",
+    "firebase": "^10.12.3",
+    "passport-google-oauth20": "^2.0.0"
+  }
+}

@@ -1,7 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'patient_page.dart'; // Import the patient_page.dart file
+import 'home_screen.dart'; // Import the home_page.dart file
 
 class DoctorScreen extends StatelessWidget {
   @override
@@ -114,7 +115,20 @@ class DoctorScreen extends StatelessWidget {
                   Text('Patient', style: TextStyle(color: Colors.blue)),
                 ],
               ),
-              SizedBox(height: 60), // Move the Patient icon lower
+              SizedBox(height: 20),
+
+              // Sign Out button
+              ElevatedButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                    (route) => false,
+                  );
+                },
+                child: Text('Sign Out'),
+              ),
             ],
           ),
         ],
@@ -322,12 +336,60 @@ class DoctorScreen extends StatelessWidget {
     );
   }
 
-  // Function to show dialog for editing a Patient's details
-  void _showEditPatientDialog(BuildContext context, QueryDocumentSnapshot doc) {
-    String _fullName = doc['fullName'];
-    String _email = doc['email'];
-    String _phoneNumber = doc['phoneNumber'];
-    int _age = doc['age'];
+  // Function to show dialog for deleting a Patient
+  void _showDeletePatientDialog(BuildContext context) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('patients').get();
+    List<QueryDocumentSnapshot> patientDocs = snapshot.docs;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Patient'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: patientDocs.map((doc) {
+                return ListTile(
+                  title: Text(doc['fullName']),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Email: ${doc['email']}'),
+                      Text('Phone: ${doc['phoneNumber']}'),
+                      Text('Age: ${doc['age']}'),
+                    ],
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      _deletePatientFromFirestore(doc.id);
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to show dialog for editing Patient details
+  void _showEditPatientDialog(BuildContext context, QueryDocumentSnapshot patientDoc) {
+    String _fullName = patientDoc['fullName'];
+    String _email = patientDoc['email'];
+    String _phoneNumber = patientDoc['phoneNumber'];
+    int _age = patientDoc['age'];
 
     final _formKey = GlobalKey<FormState>();
 
@@ -335,7 +397,7 @@ class DoctorScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Edit Patient Details'),
+          title: Text('Edit Patient'),
           content: SingleChildScrollView(
             child: Form(
               key: _formKey,
@@ -410,7 +472,7 @@ class DoctorScreen extends StatelessWidget {
               child: Text('Save'),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  _updatePatientInFirestore(doc.id, _fullName, _email, _phoneNumber, _age).then((_) {
+                  _updatePatientInFirestore(patientDoc.id, _fullName, _email, _phoneNumber, _age).then((_) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Patient updated successfully')),
                     );
@@ -429,101 +491,45 @@ class DoctorScreen extends StatelessWidget {
     );
   }
 
+
   // Function to add a new Patient to Firestore
   Future<void> _addPatientToFirestore(String fullName, String email, String phoneNumber, int age) async {
-    try {
-      await FirebaseFirestore.instance.collection('patients').add({
-        'fullName': fullName,
-        'age': age,
-        'email': email,
-        'phoneNumber': phoneNumber,
-        'role': 'Patient', // Setting role as Patient
-      });
-    } catch (e) {
-      throw e;
-    }
+    await FirebaseFirestore.instance.collection('patients').add({
+      'fullName': fullName,
+      'email': email,
+      'phoneNumber': phoneNumber,
+      'age': age,
+    });
   }
+  
 
-  // Function to update a Patient's details in Firestore
-  Future<void> _updatePatientInFirestore(String docId, String fullName, String email, String phoneNumber, int age) async {
-    try {
-      await FirebaseFirestore.instance.collection('patients').doc(docId).update({
-        'fullName': fullName,
-        'age': age,
-        'email': email,
-        'phoneNumber': phoneNumber,
-      });
-    } catch (e) {
-      throw e;
-    }
-  }
 
-  // Function to fetch Doctor data from Firestore
-  Future<List<Map<String, dynamic>>> _fetchDoctors() async {
-    List<Map<String, dynamic>> doctors = [];
 
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('doctors').get();
 
-      querySnapshot.docs.forEach((doc) {
-        doctors.add({
-          'fullName': doc['fullName'],
-          'email': doc['email'],
-          'role': 'doctor',
-        });
-      });
-
-      return doctors;
-    } catch (e) {
-      print('Error fetching doctors: $e');
-      return [];
-    }
-  }
-
-  // Function to show dialog for deleting a Patient
-  void _showDeletePatientDialog(BuildContext context) async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('patients').get();
-    List<QueryDocumentSnapshot> patientDocs = snapshot.docs;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Delete Patient'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: patientDocs.map((doc) {
-                return ListTile(
-                  title: Text(doc['fullName']),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () async {
-                      // Implement the logic to delete the patient here
-                      await FirebaseFirestore.instance.collection('patients').doc(doc.id).delete();
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${doc['fullName']} deleted')),
-                      );
-
-                      Navigator.of(context).pop(); // Close the dialog
-                    },
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 }
+
+
+
+  // Function to update a Patient in Firestore
+  Future<void> _updatePatientInFirestore(String patientId, String fullName, String email, String phoneNumber, int age) async {
+    await FirebaseFirestore.instance.collection('patients').doc(patientId).update({
+      'fullName': fullName,
+      'email': email,
+      'phoneNumber': phoneNumber,
+      'age': age,
+    });
+  }
+
+
+  // Function to delete a Patient from Firestore
+  Future<void> _deletePatientFromFirestore(String patientId) async {
+    await FirebaseFirestore.instance.collection('patients').doc(patientId).delete();
+  }
+  
+
+  // Function to fetch Doctor details from Firestore
+  Future<List<Map<String, dynamic>>> _fetchDoctors() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('doctors').get();
+    return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+  }
 
