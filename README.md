@@ -19,18 +19,17 @@ To run this project locally, follow these steps:
 
 Clone the repository:
 
-sh
-Copier le code
+
+
 git clone https://github.com/med-adam-alimi/Nephro_doppler_IQ.git
 Navigate to the project directory:
 
-sh
-Copier le code
+
+Copier:
 cd Nephro_doppler_IQ
 Install dependencies:
 
-sh
-Copier le code
+copier:
 flutter pub get
 Configure Firebase:
 
@@ -39,8 +38,8 @@ Add your google-services.json (for Android) and GoogleService-Info.plist (for iO
 For web, update the Firebase configuration in web/index.html.
 Run the application:
 
-sh
-Copier le code
+
+Copie:
 flutter run
 Usage
 Doctors: Use the application to capture and upload patient photos and videos to Google Drive.
